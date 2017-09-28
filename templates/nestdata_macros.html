@@ -1,0 +1,167 @@
+<!-- template for rendering Nest Thermostat state (from rest-streaming sample) -->
+{% macro thermostat(device) %}
+  <div>
+    <b>Temperature:</b>
+    {% if device.temperature_scale == 'C' %}
+      {{ device.target_temperature_c }}&deg;C
+    {% elif device.temperature_scale == 'F' %}
+      {{ device.target_temperature_f }}&deg;F
+    {% endif %}
+  </div>
+  <div>
+    <b>Humidity:</b> {{ device.humidity }}%
+    {% if device.has_leaf %}
+      <img src="{{ url_for('static', filename='images/nest-leaf.png') }}" class="leaf-img">
+    {% endif %}
+  </div>
+  <div>
+    {% if device.has_fan %}
+      {% if device.fan_timer_active %}
+        <b>Fan:</b> On ending on {{ device.fan_timer_timeout }}
+      {% else %}
+        <b>Fan:</b> Off
+      {% endif %}
+    {% endif %}
+  </div>
+  {% for key in device %}
+    {% if key in msgmap.labels and key not in
+['name', 'where_id', 'humidity', 'has_leaf', 'has_fan', 'target_temperature_c', 'target_temperature_f'] %}
+        <div><strong>{{ msgmap.labels[key] }}:</strong> 
+        {% if device[key] == true %} yes
+        {% elif device[key] == false %} no
+        {% else %} {{ device[key] }} {% endif %}
+        </div>
+    {% endif %}
+  {% endfor %}
+  <div> <!-- thermostat history link / content -->
+    <a class="deviceLink" href="#thermostat{{ device.device_id }}_hist" data-toggle="modal"><b>View history..</b></a>
+  </div>
+  <div id="thermostat{{ device.device_id}}_hist" class="modal fade text-right thermostat-hist" data-backdrop="false"
+       data-api-url="{{ url_for('thermostat_hist') }}" data-api-id="{{ device.device_id }}" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Thermostat History</h4>
+          <button type="button" class="close" data-dismiss="modal">CLOSE</button>
+        </div>
+        <div class="modal-body">
+        </div>
+      </div>
+    </div>
+  </div> <!-- end thermostat history link / content -->
+{% endmacro %} <!-- end thermostat macro -->
+
+<!-- template for rendering Nest Smoke/CO alarm state (from rest-streaming sample) -->
+{% macro smoke_co_alarm(device) %}
+  <div>
+    <b>Battery Health:</b> {{device.battery_health}}
+  </div>
+  <div>
+    <b>Smoke state:</b> {{device.smoke_alarm_state}}
+  </div>
+  <div>
+    <b>CO state:</b> {{device.co_alarm_state}}
+  </div>
+  <div class="color-state"><b>Color state:</b>
+    {% if device.ui_color_state == 'green' %}
+      <img src="{{ url_for('static', filename='images/green-state.png') }}" /> 
+    {% elif device.ui_color_state == 'yellow' %}
+      <img src="{{ url_for('static', filename='images/yellow-state.png') }}" /> 
+    {% elif device.ui_color_state == 'red' %}
+      <img src="{{ url_for('static', filename='images/red-state.png') }}" /> 
+    {% else %}
+      <img src="{{ url_for('static', filename='images/gray-state.png') }}" /> 
+    {% endif %}
+  </div>
+{% endmacro %} <!-- end smoke-co-alarm -->
+
+<!-- template for rendering Nest Camera state (from rest-streaming sample) -->
+{% macro camera(device) %}
+  <div>
+    <b>Online:</b>{% if device.is_online %} Yes {% else %} No {% endif %}
+  </div>
+  <form method="POST" action="/apiupdate/devices/cameras/{{ device.device_id }}" role="form"><fieldset>
+    <div>
+      <b>Active subscription:</b>{% if device.is_video_history_enabled %} Yes {% else %} No {% endif %}
+    </div>
+    <div>
+      <strong>Streaming: </strong>
+      <div class="btn-group radio-group">
+        <!-- device['is_streaming'] =  {{ device['is_streaming'] }} -->
+        <input type="radio" value="true" name="is_streaming" 
+          {% if device['is_streaming'] %} class="active" checked=true {% endif %} > Yes
+        <input type="radio" value="false" name="is_streaming" style="margin-left:2px" 
+          {% if device['is_streaming'] == False %} class="active" checked=true {% endif %} > No 
+      </div>
+    </div>
+  </fieldset></form>
+  <div>
+    <b>Audio:</b>{% if device.is_audio_input_enabled%} Yes {% else %} No {% endif %}
+  </div>
+  <div> <!-- camera images link / content -->
+    <a class="cameraLink" href="#camera{{ device.device_id }}_imgs" data-toggle="modal"><b>View images..</b></a>
+  </div>
+  <div id="camera{{ device.device_id}}_imgs" class="modal fade text-right camera-imgs" data-backdrop="false" data-keyboard="true"
+       data-api-url="{{ url_for('camera_imgs') }}" data-api-id="{{ device.device_id }}" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Camera Video and Snapshots</h4>
+          <button type="button" class="close" data-dismiss="modal">CLOSE</button>
+        </div>
+        <div class="modal-body">
+        </div>
+      </div>
+    </div>
+  </div> <!-- end camera images link / content -->
+{% endmacro %} <!-- end camera -->
+
+{% macro device(device_type, struct, devices) %}
+  {% set dvmsg = msgmap.labels[device_type] %}
+  {% set dvfa_icon = msgmap["fa-icons"][device_type] %}
+  <div>
+  {% if device_type in struct %}
+    {% for device_id in struct[device_type] %}
+      {% set device = devices[device_type][device_id] %}
+      {% set show_device = 'device{0}'.format(device.device_id) in expanded_ids %}
+      <div>
+       <strong>
+         <a href="#device{{ device.device_id }}" data-toggle="collapse" style="color:slategrey">
+           {% if dvfa_icon  %}
+             <i class="fa fa-{{ dvfa_icon }}" aria-hidden="true"></i>
+           {% endif %}
+           {{ device.name }}
+           <i class="chevron fa {% if show_device %} fa-chevron-down {% else %} fa-chevron-right {% endif %}"
+              aria-hidden="true"></i>
+         </a>
+       </strong>
+       </div>
+       <div id="device{{ device.device_id}}"
+            class="collapse {% if show_device %} show {% endif %} demo {{ device_type }}">
+         <div class="card-block">
+           {% if device_type == 'thermostats'%}
+             {{ thermostat(device) }}
+           {% elif device_type == 'smoke_co_alarms'%}
+             {{ smoke_co_alarm(device) }}
+           {% elif device_type == 'cameras'%}
+             {{ camera(device) }}
+           {% else %}
+             <table class="table"><colgroup><col width="30%"><col "text-align:left" class="align-left"></colgroup>
+               {% for device_key, device_value in device.iteritems() %}
+                 {% if device_key in msgmap.labels %}
+                   <tr>
+                     <td align="right">{{ msgmap.labels[device_key] }}: </td>
+                     <td align="left">{{ device_value }}</td> 
+                   </tr>
+                 {% endif %}
+               {% endfor %}
+             </table>
+           {% endif %}
+         </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <span style="color: slategrey">-none-</span>
+  {% endif %}
+  </div>
+{% endmacro %} <!-- devices -->

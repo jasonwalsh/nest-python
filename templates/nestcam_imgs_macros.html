@@ -1,0 +1,30 @@
+{% macro all_cams_imgs(struct, cameras) %}
+  {% if cameras %}
+    <!-- camera images link / content -->
+    {% set struct_id = struct["structure_id"] %}
+    {% for camera_id, camera in cameras.iteritems() %}
+        {% if camera["structure_id"] == struct_id %}
+            <div class="row">
+                <span>{{ camera["name"] }}:</span>
+            </div>
+            <div class="row">
+            {% if camera["last_event"] and camera["last_event"]["animated_image_url"] %}
+                <div class="col-sm-4">
+                    <img src="{{ camera["last_event"]["animated_image_url"] }}" class="img-thumbnail" onerror="this.style.display='none'">
+                </div>
+            {% endif %}
+            {% if camera["snapshot_url"] and camera["snapshot_url"] != sim_snapshot_url %}
+                <div class="col-sm-4">
+                    <img src="{{ camera["snapshot_url"] }}" class="img-thumbnail" onerror="this.style.display='none'">
+                </div>
+            {% endif %}
+            {% if session[camera_id] and session[camera_id] != sim_snapshot_url %}
+                <div class="col-sm-4">
+                    <img src="{{ session[camera_id] }}" class="img-thumbnail" onerror="this.style.display='none'">
+                </div>
+            {% endif %}
+            </div> <!-- row -->
+        {% endif %}
+    {% endfor %} <!-- for each camera -->
+  {% endif %}
+{% endmacro %} <!-- all_cams_imgs -->

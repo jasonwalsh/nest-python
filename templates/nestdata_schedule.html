@@ -1,0 +1,81 @@
+{% set structures = data.get_structures() %}
+{% if structures %}
+
+<!-- Scheduled updates used for demonstrating confirmations -->
+<div id="schedules" class="card alert" role="card">
+    <span id="scheduleDesc">Schedule updates to home/away status, or turn cameras on/off:</span>
+
+    <div id="scheduleStructs">
+        <form method="POST" action="/apiupdate/structures/" role="form">
+            <select name="structure" class="form-control scheduleSelect" title="Choose one of the following...">
+                <option value="" disabled selected hidden>1. select Home/Structure..</option>
+                {% for struct_id, struct in structures.iteritems() %}
+                    <option value="{{ struct_id }}">{{ struct["name"] }}</option>
+                {% endfor %}
+            </select>
+            <select name="away" class="form-control scheduleSelect">
+                <option value="" disabled selected hidden>2. select Home or Away..</option>
+                <option value="home">Home</option>
+                <option value="away">Away</option>
+            </select>
+            <select name="schedule" class="form-control scheduleSelect">
+                <option value="" disabled selected hidden>3. select Schedule..</option>
+                <option value="1">1 minute</option>
+                <option value="30">30 minutes</option>
+                <option value="60">60 minutes</option>
+                <option value="240">4 hours</option>
+            </select>
+            <button id="schedAwayBtn" type="button" class="btn">SCHEDULE</button>
+        </form>
+    </div>
+
+    {% set cameras = data.get_cameras() %}
+    {% if cameras %}
+    <div id="scheduleCameras">
+        <form method="POST" action="/apiupdate/devices/cameras/" role="form">
+            <select name="camera" class="form-control scheduleSelect">
+                <option value="" disabled selected hidden>1. select Camera..</option>
+                {% for struct_id, struct in structures.iteritems() %}
+                    {% for camera_id, camera in cameras.iteritems() %}
+                        {% if struct_id ==  camera["structure_id"] %}
+                            <option value="{{ camera_id }}">{{ struct["name"] }} &gt;  {{ camera["name"] }}</option>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </select>
+            <select name="is_streaming" class="form-control scheduleSelect">
+                <option value="" disabled selected hidden>2. select On or Off..</option>
+                <option value="true">On</option>
+                <option value="false">Off</option>
+            </select>
+            <select name="schedule" class="form-control scheduleSelect">
+                <option value="" disabled selected hidden>3. select Schedule..</option>
+                <option value="1">1 minute</option>
+                <option value="30">30 minutes</option>
+                <option value="60">60 minutes</option>
+                <option value="240">4 hours</option>
+            </select>
+            <button id="schedCamBtn" type="button" class="btn">SCHEDULE</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <p></p>
+    <div class="container">
+        <table id="scheduleTable" class="table table-sm"  style="display:none">
+            <thead>
+            <tr>
+                <th>Structure/Device Name</th>
+                <th>Property</th>
+                <th>Value</th>
+                <th>Scheduled</th>
+                <th>DELETE</th>
+            </tr>
+            </thead>
+            <tbody id="scheduleTableBody">
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endif %}

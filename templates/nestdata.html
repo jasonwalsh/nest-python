@@ -1,0 +1,121 @@
+{% if data.has_structures() %}
+
+<!-- import macros for showing devices -->
+{% import "nestdata_macros.html" as macros with context %}
+{% import "nestcam_imgs_macros.html" as cam_macros with context %}
+
+<!--
+Structures:
+Product supports multiple Nest structures (homes) as well as provides a structure picker if
+the user chooses multiple structures during authorization.
+
+The div below is a structure picker using an accordion class to expand/collapse each structure.
+The schedule component uses a dropdown (select) list to choose a structure.
+-->
+<div id="structure-picker" class="accordion" role="tablist">
+
+  {% for struct_id, struct in data.get_structures().iteritems() %}
+    {% set show_struct = 'collapse{0}'.format(loop.index) in expanded_ids %}
+    {% set devices = data.get_devices() %}
+    {% set cameras = data.get_cameras() %}
+    <!-- Get device types found in any structures returned. Merge with default list to preserve device sections even if no devices (not required). -->
+    {% set device_types = data.get_device_types(['cameras', 'thermostats', 'smoke_co_alarms']) %}
+
+    <div class="card">
+
+      <div class="card-header structure-card" id="heading{{ loop.index }}">
+        <h4> 
+          <a data-toggle="collapse" data-parent="#structure-picker" href="#collapse{{loop.index}}"
+             aria-expanded="false" aria-controls="collapse{{loop.index}}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            {{ struct.name }}
+            <i class="chevron fa {% if show_struct %} fa-chevron-down {% else %} fa-chevron-right {% endif %}" aria-hidden="true"></i>
+          </a>
+        </h4>
+      </div> <!-- card header -->
+
+      <!-- collapsed / expanded section below -->
+      <div id="collapse{{loop.index}}"
+           class="collapse {% if show_struct %} show {% endif %}"
+           data-struct-id="{{ struct_id }}" role="tabpanel"
+           aria-labelledby="heading{{loop.index}}">
+        <div class="card-block">
+
+          <p class="card-text">
+            <div class="mdl-shadow--2dp">
+              <div class="structure-level-details"> 
+                <!-- Structures: 
+                   Product supports Home and Away states separately from the thermostats -
+                   handle Home/Away states without a thermostat in the account
+                   (with an empty structure or without other devices as well).
+                 -->
+                <form method="POST" action="/apiupdate/structures/{{ struct_id }}" role="form">
+                  <span><strong>{{ msgmap.labels['away'] or 'Home/Away' }}:</strong>
+                    <div class="btn-group radio-group">
+                      <input type="radio" value="home" name="away"
+                             {%- if struct['away'] == 'home' %} class="active" checked=true {% endif %} > Home
+                      <input type="radio" value="away" name="away" style="margin-left:2px"
+                             {%- if struct['away'] == 'away' %} class="active" checked=true {% endif %} > Away
+                    </div>
+                  </span>
+                  {% for key in struct %} <!-- skip keys below that are shown in other sections -->
+                    {% if key not in ['name','away', 'thermostats', 'smoke_co_alarms', 'cameras', 'wheres', 'structure_id'] %}
+                      {% if key in msgmap.labels %}
+                        <span>&bull;</span>
+                        <span><strong>{{ msgmap.labels[key] }}:</strong> {{ struct[key] }}</span>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+
+                  {% if cameras %}
+                    <span style="margin:0 2px">
+                      <a class="deviceLink" href="#allcams{{struct_id}}" data-toggle="modal">
+                      <b>View images for all {{ struct["name"] }} cameras..</b></a>
+                    </span>
+                  {% endif %}
+
+                </form>
+              </div>
+            </div>
+          </p> <!-- card-text for structure fields -->
+ 
+          <!-- Devices 8. Product handles new device/structure names - pull new names if they were changed from the Nest side.  -->
+          <div class="card-group">
+            <div class="card-deck">
+              {% for device_type in device_types %}
+                <div class="card card-device pb-2">
+                  {% set dvmsg = msgmap.labels[device_type] %}
+                  <div class="card-header card-header-device {{ device_type }}">{{ dvmsg or device_type|capitalize }}:</div>
+                  <div class="card-block">
+                    <p class="card-text device-type">
+                      {{ macros.device(device_type, struct, devices) }}
+                    </p>
+                  </div>
+                </div>
+              {% endfor %} <!-- for each device type -->
+            </div> <!-- card-deck -->
+          </div> <!-- card-group -->
+
+        </div> <!-- card-block (structure block) -->
+      </div> <!-- collapse -->
+
+    {% if cameras %}
+      <div id="allcams{{ struct_id }}" class="modal fade text-right" data-backdrop="false">
+        <div class="modal-dialog container demo">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4>Camera Video and Snapshots</h4>
+              <button type="button" class="close" data-dismiss="modal">CLOSE</button>
+            </div>
+            <div class="modal-body">
+              {{ cam_macros.all_cams_imgs(struct, cameras) }}
+            </div> <!-- modal-body -->
+          </div> <!-- modal-content -->
+        </div> <!-- modal-dialog -->
+      </div> <!-- #allcams-urls -->
+    {% endif %}
+
+  {% endfor %} <!-- for each structure -->
+</div> <!-- structure-picker -->
+
+{% endif %}

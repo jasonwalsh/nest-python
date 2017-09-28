@@ -1,0 +1,66 @@
+<div id="slides{{ device.device_id }}" class="carousel slide cameras" data-interval="false" data-ride="">
+  <div class="carousel-inner" role="listbox">
+    <div class="carousel-item active">
+      {% if device["last_event"] and device["last_event"]["animated_image_url"] %}
+        <div class="mdl-card__title mdl-card--expand"
+             style="background:url('{{ device["last_event"]["animated_image_url"] }}') center / cover;height:250px">
+        </div>
+      {% else %}
+        <div class="mdl-card__title mdl-card--expand" style="background-color:black;height:250px">
+          Camera does not have subscription (can't get last_event.animated_image_url)
+        </div>
+      {% endif %}
+      <div class="carousel-caption">
+        <h3 class="mdl-card__title-text">animated</h3>
+      </div>
+    </div>
+    <div class="carousel-item">
+      {% if device["snapshot_url"] and device["snapshot_url"] != sim_snapshot_url %}
+        <div class="mdl-card__title mdl-card--expand"
+             style="background:url('{{ device["snapshot_url"] }}') center / cover;height:250px">
+        </div>
+      {% else %}
+        <div class="mdl-card__title mdl-card--expand" style="background-color:black;height:250px">
+          Camera does not have snapshot (can't get camera.snapshot_url)
+        </div>
+      {% endif %}
+      <div class="carousel-caption">
+        <h3 class="mdl-card__title-text">snapshot</h3>
+      </div>
+    </div>
+    <div class="carousel-item">
+      {% if session[device["device_id"]] and session[device["device_id"]] != sim_snapshot_url %}
+        <div class="mdl-card__title mdl-card--expand"
+             style="background:url('{{ session[device["device_id"]] }}') center / cover;height:250px">
+        </div>
+      {% else %}
+        <div class="mdl-card__title mdl-card--expand" style="background-color:black;height:250px">
+          Camera does not have cached previous snapshot
+        </div>
+      {% endif %}
+      <div class="carousel-caption">
+        <h3 class="mdl-card__title-text">previous snapshot</h3>
+      </div>
+    </div>
+
+    {% for date, image_file in image_files.iteritems() %}
+      <div class="carousel-item">
+        <div class="mdl-card__title mdl-card--expand"
+             style="background:url('{{ image_file }}') center / cover;height:250px">
+        </div>
+        <div class="carousel-caption">
+          <h3 class="mdl-card__title-text">{{ date }}</h3>
+        </div>
+      </div>
+    {% endfor %}
+
+  </div> <!-- carousel-inner -->
+  <a class="carousel-control-prev" href="#slides{{ device.device_id }}" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#slides{{ device.device_id }}" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div> <!-- #slides.. -->

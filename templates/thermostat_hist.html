@@ -1,0 +1,69 @@
+<p></p>
+<div class="container">
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Target Temp</th>
+        <th>Humidity</th>
+        <th>Fan</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for date,therm_h in hist_files.iteritems() %}
+        <tr>
+          <td>{{ date }}</td>
+          <td>{{ therm_h.target_temperature_f}}&deg;F</td>
+          <td>{{ therm_h.humidity }} </th>
+          <td>{% if therm_h.has_fan %} yes {% else %} no {% endif %}</th>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</div>
+<div id="slides{{ device.device_id }}" class="carousel slide thermostats" data-interval="false" data-ride="">
+  <div class="carousel-inner" role="listbox" style="background-color:#d8ead7">
+    {% for date, therm_h in hist_files.iteritems() %}
+      <div class="carousel-item {% if loop.index == 1 %} active {% endif %}">
+      <div style="width:50%">
+        <div>
+          <b>Temperature:</b>
+          {% if therm_h.temperature_scale == 'C' %}
+            {{ therm_h.target_temperature_c }}&deg;C
+          {% elif therm_h.temperature_scale == 'F' %}
+            {{ therm_h.target_temperature_f }}&deg;F
+          {% endif %}
+        </div>
+        <div>
+          <b>Humidity:</b> {{ therm_h.humidity }}%
+          {% if therm_h.has_leaf %}
+            <img src="{{ url_for('static', filename='images/nest-leaf.png') }}" class="leaf-img">
+          {% endif %}
+        </div>
+        <div>
+          {% if therm_h.has_fan %}
+            {% if therm_h.fan_timer_active %}
+              <b>Fan:</b> On ending on {{ therm_h.fan_timer_timeout }}
+            {% else %}
+              <b>Fan:</b> Off
+            {% endif %}
+         {% endif %}
+        </div>
+        <div>
+          <h3>{{ date }}</h3>
+        </div>
+      </div>
+      </div> <!-- carousel-item -->
+    {% endfor %}
+  </div> <!-- carousel-inner -->
+  <a class="carousel-control-prev" href="#slides{{ device.device_id }}" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#slides{{ device.device_id }}" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div> <!-- #slides.. -->
