@@ -120,7 +120,7 @@
   {% set dvmsg = msgmap.labels[device_type] %}
   {% set dvfa_icon = msgmap["fa-icons"][device_type] %}
   <div>
-  {% if device_type in struct %}
+  {% if device_type in struct and device_type in devices %}
     {% for device_id in struct[device_type] %}
       {% set device = devices[device_type][device_id] %}
       {% set show_device = 'device{0}'.format(device.device_id) in expanded_ids %}
