@@ -127,6 +127,10 @@ In Chrome, right-click the app and select **Inspect**.
 In the Responsive pulldown menu, select another format, such as iPhone 6.  
 Click the icon that looks like a phone (**Toggle device toolbar**).
 
+## Companion codelab
+
+[10 Tips for a successful Nest integration](https://codelabs.developers.google.com/codelabs/nest-ten-tips-for-success)
+
 ## Contributing
 
 Contributions are always welcome and highly encouraged.
