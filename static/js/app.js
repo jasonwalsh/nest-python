@@ -30,7 +30,26 @@
     var alertModalCtl = $('#alertModal');
     var confirmModalCtl = $('#confirmModal');
 
-    pollRESTClient(); // call sample WWN app server to fetch Nest data
+    // Either poll or listen for updates - disable either pollRESTClient or listenRESTClient 
+    pollRESTClient();       // call sample WWN app server to fetch Nest data
+    //listenRESTStreamClient();  // listen for sample WWN app server receiving Nest data
+
+    /*
+      Product updates within seconds after temperatures, setpoints, ambient temperatures, alarm states, motion/sound
+      events have  changed - listen to updates from device and how to update their app real-time or near-real time.
+      For example, with REST calls, poll every 30 or 60 seconds; with REST streaming, listen for updates on device level.
+    */
+    function listenRESTStreamClient() {
+        // data refresh  - show status msg then show API results
+        showMsg('info', '<i class="fa fa-refresh fa-spin fa-2x fa-fw" aria-hidden="true"></i>Nest product refresh');
+
+        var source = new EventSource('/apicontent_stream');
+        source.onmessage = function (event) {
+            console.log("event: " +  event);
+            let data = JSON.parse(event.data);
+            handleData(data);
+        };
+    }
 
     /*
       Product updates within seconds after temperatures, setpoints, ambient temperatures, alarm states, motion/sound
@@ -47,11 +66,11 @@
             return false;
         }
 
-        // fetch the data and update results
-        let contentURL = resultsCard.data('api-url');
-
         // data refresh  - show status msg then show API results
         showMsg('info', '<i class="fa fa-refresh fa-spin fa-2x fa-fw" aria-hidden="true"></i>Nest product refresh');
+
+        // fetch the data and update results
+        let contentURL = resultsCard.data('api-url');
 
         let url = pollIntervalId ? (contentURL + "?poller_id=" + pollIntervalId) : contentURL;
         console.log("request content url = ", url);
@@ -184,13 +203,14 @@
             table.style.display = 'table';
         };
 
-        $('#schedAwayBtn').on('click', function(ev) {
-            let $form = $(this).closest('form');
+        $('#schedAwayForm').on('submit', function(ev) {
+            ev.stopImmediatePropagation();
+            let $form = $(this); 
             let minutes = $form.find("*[name=schedule]").val();
             let structure = $form.find("*[name=structure]").val();
             let structureName = $form.find("*[name=structure] option:selected").text();
             let away = $form.find("*[name=away]").val();
-            let url = $form.attr('action') + structure;
+            let url = $form.attr('path') + structure;
             /*
              Product asks using confirmation for an automated action, such as when switching Home/Away states and turning Camera on/off.
              */
@@ -211,14 +231,15 @@
             return false;
         });
 
-        $('#schedCamBtn').on('click', function(ev) {
-            let $form = $(this).closest('form');
+        $('#schedCamForm').on('submit', function(ev) {
+            ev.stopImmediatePropagation();
+            let $form = $(this); 
             let minutes = $form.find("*[name=schedule]").val();
             let camera = $form.find("*[name=camera]").val();
             let cameraName = $form.find("*[name=camera] option:selected").text();
             let isStreaming = $form.find("*[name=is_streaming]").val();
             let onOffLabel = isStreaming === 'true' ? 'on' : 'off';
-            let url = $form.attr('action') + camera;
+            let url = $form.attr('path') + camera;
             /*
              Product asks using confirmation for an automated action, such as when switching Home/Away states and turning Camera on/off.
              */
