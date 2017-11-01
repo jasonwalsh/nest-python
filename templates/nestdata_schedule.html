@@ -3,38 +3,38 @@
 
 <!-- Scheduled updates used for demonstrating confirmations -->
 <div id="schedules" class="card alert" role="card">
-    <span id="scheduleDesc">Schedule updates to home/away status, or turn cameras on/off:</span>
+    <span id="scheduleDesc">Schedule updates:</span>
 
     <div id="scheduleStructs">
-        <form method="POST" action="/apiupdate/structures/" role="form">
-            <select name="structure" class="form-control scheduleSelect" title="Choose one of the following...">
-                <option value="" disabled selected hidden>1. select Home/Structure..</option>
+        <form id="schedAwayForm" path="/apiupdate/structures/" role="form">
+            <select name="structure" class="form-control scheduleSelect" required>
+                <option value="" disabled selected hidden>Home/Structure...</option>
                 {% for struct_id, struct in structures.iteritems() %}
                     <option value="{{ struct_id }}">{{ struct["name"] }}</option>
                 {% endfor %}
             </select>
-            <select name="away" class="form-control scheduleSelect">
-                <option value="" disabled selected hidden>2. select Home or Away..</option>
+            <select name="away" class="form-control scheduleSelect" required>
+                <option value="" disabled selected hidden>Home or Away...</option>
                 <option value="home">Home</option>
                 <option value="away">Away</option>
             </select>
-            <select name="schedule" class="form-control scheduleSelect">
-                <option value="" disabled selected hidden>3. select Schedule..</option>
+            <select name="schedule" class="form-control scheduleSelect" required>
+                <option value="" disabled selected hidden>Schedule...</option>
                 <option value="1">1 minute</option>
                 <option value="30">30 minutes</option>
                 <option value="60">60 minutes</option>
                 <option value="240">4 hours</option>
             </select>
-            <button id="schedAwayBtn" type="button" class="btn">SCHEDULE</button>
+            <button id="schedAwayBtn" type="submit" class="btn">SCHEDULE</button>
         </form>
     </div>
 
     {% set cameras = data.get_cameras() %}
     {% if cameras %}
     <div id="scheduleCameras">
-        <form method="POST" action="/apiupdate/devices/cameras/" role="form">
-            <select name="camera" class="form-control scheduleSelect">
-                <option value="" disabled selected hidden>1. select Camera..</option>
+        <form id="schedCamForm" path="/apiupdate/devices/cameras/" role="form">
+            <select name="camera" class="form-control scheduleSelect" required>
+                <option value="" disabled selected hidden>Camera...</option>
                 {% for struct_id, struct in structures.iteritems() %}
                     {% for camera_id, camera in cameras.iteritems() %}
                         {% if struct_id ==  camera["structure_id"] %}
@@ -43,19 +43,19 @@
                     {% endfor %}
                 {% endfor %}
             </select>
-            <select name="is_streaming" class="form-control scheduleSelect">
-                <option value="" disabled selected hidden>2. select On or Off..</option>
+            <select name="is_streaming" class="form-control scheduleSelect" required>
+                <option value="" disabled selected hidden>On or Off...</option>
                 <option value="true">On</option>
                 <option value="false">Off</option>
             </select>
-            <select name="schedule" class="form-control scheduleSelect">
-                <option value="" disabled selected hidden>3. select Schedule..</option>
+            <select name="schedule" class="form-control scheduleSelect" required>
+                <option value="" disabled selected hidden>Schedule...</option>
                 <option value="1">1 minute</option>
                 <option value="30">30 minutes</option>
                 <option value="60">60 minutes</option>
                 <option value="240">4 hours</option>
             </select>
-            <button id="schedCamBtn" type="button" class="btn">SCHEDULE</button>
+            <button id="schedCamBtn" type="submit" class="btn">SCHEDULE</button>
         </form>
     </div>
     {% endif %}

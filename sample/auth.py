@@ -29,7 +29,7 @@ def get_access(authorization_code):
     store_token(token)
 
 
-def remove_access():
+def remove_access(auth_revoked=False):
     """ Product has correctly implemented deauth API when disconnecting or logging out.
 
      When the user requests to log out, deauthorize their token using the Nest
@@ -38,11 +38,12 @@ def remove_access():
     """
     token = fetch_token()
     if token:
-        # delete user token using the Nest API
-        try:
-            access_token.delete_access_token(token)
-        except Exception as ex:
-            print "Error deleting access token: ", ex
+        if not auth_revoked:
+            # delete user token using the Nest API, if not already revoked
+            try:
+                access_token.delete_access_token(token)
+            except Exception as ex:
+                print "Error deleting access token: ", ex
 
         # delete token and user data from persistent storage and cache
         delete_cached_token()

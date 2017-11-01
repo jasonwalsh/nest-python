@@ -22,6 +22,23 @@ from errors import APIError, error_result, get_error_msg_help
 from settings import nest_api_url
 
 
+def get_event_stream(token):
+    # Must use this version for sseclient for this sample
+    #   https://github.com/mpetazzoni/sseclient
+    import sseclient
+    import urllib3
+
+    """ Start REST streaming device events given a Nest token.  """
+    headers = {
+        'Authorization': "Bearer {0}".format(token),
+        'Accept': 'text/event-stream'
+    }
+    http = urllib3.PoolManager()
+    response = http.request('GET', nest_api_url, headers=headers, preload_content=False)
+    client = sseclient.SSEClient(response)
+    return client
+
+
 def get_device(token, device_type, device_id):
     api_path = "{0}/devices/{1}/{2}".format(nest_api_url, device_type, device_id)
     data = get_data(token, api_path)
