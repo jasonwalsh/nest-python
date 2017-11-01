@@ -36,7 +36,7 @@ This project uses Python's PIP to manage dependent packages.
    *  Uncomment sseclient-py and urllib3 in requirements.txt. Continue with steps below.  
   
 
-In a terminal window, go to the python-sample directory and run the following 
+In a terminal window, go to the nest-python directory and run the following 
 commands.
 
 Spin up a virtual environment:
