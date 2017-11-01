@@ -26,6 +26,15 @@ This project uses Python's PIP to manage dependent packages.
 1. Install PIP and Python 2.7: 
    [https://zaiste.net/posts/installing\_python\_27\_on\_osx\_with\_homebrew/](https://zaiste.net/posts/installing_python_27_on_osx_with_homebrew/)<br/>
 1. Download the sample app and install the dependencies.
+1. (Optional) Use Redis sessions  
+   You can use Redis for Flask server-side sessions instead of the default Flask cookie based sessions.
+   *  Install Redis - see [https://redis.io/topics/quickstart](http://redis.io/topics/quickstart).
+   *  Uncomment redis in requirements.txt. Continue with steps below.
+1. (Optional) Use REST streaming  
+   You can use REST Streaming server-sent events instead of polling the API server.  
+   *  Update static/js/app.js and un-comment listenRESTStreamClient().  Comment out pollRESTClient().  
+   *  Uncomment sseclient-py and urllib3 in requirements.txt. Continue with steps below.  
+  
 
 In a terminal window, go to the python-sample directory and run the following 
 commands.
@@ -81,8 +90,8 @@ If you are using Linux or MacOS, open a Bash shell and type the commands below
 (substitute your product ID and secret you copied from your product page):
 
 ```
-$ export PRODUCT_ID = 'Your product ID here'
-$ export PRODUCT_SECRET = 'Your product secret here'
+$ export PRODUCT_ID='Your product ID here'
+$ export PRODUCT_SECRET='Your product secret here'
 ```
 
 —————————————————————————————————————
@@ -102,7 +111,23 @@ Run app.py:
 
 ```
 $ python app.py
+``` 
+  
+**(Optional) Use Redis sessions**  
+* Verify you have the redis server installed in the [Install dependencies](#3._install_dependencies) section.
+* Open a shell and run the redis server from the command line:
 ```
+$ redis-server
+```
+*  Open another shell (or the same one if redis-server is run in the background) and    
+   run app.py with command-line argument '--use-redis' instead:
+ 
+Run app.py (with Redis server-side sessions): 
+```
+$ python app.py --use-redis
+```  
+   
+  
 
 If you are prompted, click to allow incoming network connections.
 
