@@ -27,7 +27,7 @@ This project uses Python's PIP to manage dependent packages.
    [https://zaiste.net/posts/installing\_python\_27\_on\_osx\_with\_homebrew/](https://zaiste.net/posts/installing_python_27_on_osx_with_homebrew/)<br/>
 1. Download the sample app and install the dependencies.
 
-In a terminal window, go to the python-sample directory and run the following 
+In a terminal window, go to the nest-python directory and run the following 
 commands.
 
 Spin up a virtual environment:
