@@ -1,4 +1,4 @@
-# Python Works with Nest Sample App
+# Python Works with Nest Sample App (Docker instructions)
 
 
 NOTE: This is not an official Google product.
@@ -14,42 +14,18 @@ the Flask web framework. You'll use a Nest product to be accessed from the app.
 
 * The sample code
 * Basic knowledge of HTML, CSS, Javascript, and Python (to change the sample)
-* Python interpreter 2.7.x
+* Docker 
 * At least one Nest device, such as Nest Thermostat, Nest Cam, or Nest Protect
 
 —————————————————————————————————————
 
-<a name="install"> </a>
 ## 3. Install dependencies
 
-This README uses Python's PIP to manage dependent packages.  If you prefer to use Docker  
-instead, follow the instructions in [README-Docker.md](README-Docker.md).
+This project uses Docker to build and run the application. 
 
-1. Install PIP and Python 2.7: 
-   [https://zaiste.net/posts/installing\_python\_27\_on\_osx\_with\_homebrew/](https://zaiste.net/posts/installing_python_27_on_osx_with_homebrew/)<br/>
-1. Download the sample app.  You can modify it if you want any of the following options: 
-   * (Optional) Use Redis sessions  
-     You can use Redis for Flask server-side sessions instead of the default Flask cookie based sessions.
-     *  Install Redis for your environment: [https://redis.io](http://redis.io)
-     *  Uncomment `redis` in requirements.txt.
-   * (Optional) Use REST streaming  
-     You can use REST Streaming server-sent events instead of polling the API server.  
-     *  Update static/js/app.js and un-comment `listenRESTStreamClient()`.  Comment out `pollRESTClient()`.  
-     *  Uncomment `sseclient-py` and `urllib3` in requirements.txt.<br/><br/>
-1. In a terminal window, go to the nest-python directory and run the following
-commands.
- 
-Spin up a virtual environment:  
-```
-$ pip install virtualenv
-$ virtualenv env
-$ . env/bin/activate
-```
-
-Install the dependencies in the virtual environment: 
-```
-(env) $ pip install -r requirements.txt
-```
+1. Install Docker (and docker-compose if you are on unix). 
+   [http://www.docker.com/](http://www.docker.com)<br/>
+1. Download the sample app.
 
 —————————————————————————————————————
 
@@ -96,35 +72,25 @@ $ export PRODUCT_SECRET='Your product secret here'
 
 ## 6. Run the app
 
-If it's not already running, spin up the virtual environment in your nest-python directory:
+If it's not already running, run the Docker application you installed.
 
-
-```
-$ . env/bin/activate
-```
-
-Run app.py:
-
+In a terminal window, go to the nest-python directory and run the following 
+commands.
 
 ```
-(env) $ python app.py
-``` 
+$ docker-compose up 
+```
 
-<br/><br/>
-**(Optional) Use Redis sessions**  
-* Verify you have the redis server installed in the [Install dependencies](#install) section.
-* Open another terminal window and start the redis server:
-```
-$ redis-server
-```
-After starting redis, run app.py (with Redis server-side sessions) in your nest-python directory:
-```
-(env) $ python app.py --use-redis
-```  
-<br/>
+If you are prompted, click to allow incoming network connections. You can update  
+the source code while the Docker container is running, in a separate terminal window. 
+ 
 
 
-If you are prompted, click to allow incoming network connections.
+(Optional) Use REST streaming  
+You can use REST Streaming server-sent events instead of polling the API server.  
+   *  Update static/js/app.js and un-comment `listenRESTStreamClient()`.  
+      Comment out `pollRESTClient()` and save the file.  
+   *  Reload the app in the browser.  
 
 —————————————————————————————————————
 
@@ -147,11 +113,23 @@ In Chrome, right-click the app and select **Inspect**.
 In the Responsive pulldown menu, select another format, such as iPhone 6.  
 Click the icon that looks like a phone (**Toggle device toolbar**).
 
+—————————————————————————————————————
+
+## 9. Stop the app
+
+In a separate terminal window, go to the nest-python directory and run the 
+following commands.
+
+```
+$ docker-compose down 
+```
+
+—————————————————————————————————————
+
 ## Companion codelab
 
-[10 Tips for a successful Nest
-integration](https://codelabs.developers.google.com/codelabs/nest-ten-tips-for-success)
-   
+[10 Tips for a successful Nest integration](https://codelabs.developers.google.com/codelabs/nest-ten-tips-for-success)
+
 ## Contributing
 
 Contributions are always welcome and highly encouraged.

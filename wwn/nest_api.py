@@ -28,6 +28,8 @@ def get_event_stream(token):
     import sseclient
     import urllib3
 
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
     """ Start REST streaming device events given a Nest token.  """
     headers = {
         'Authorization': "Bearer {0}".format(token),
