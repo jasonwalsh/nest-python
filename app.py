@@ -257,7 +257,12 @@ def start_app():
     print "Use Redis for server-side session: ", use_redis
     if use_redis:
         from third_party import redis_session
-        app.session_interface = redis_session.RedisSessionInterface()
+        from redis import Redis
+        from os import environ
+        redis_host = environ.get("REDIS_HOST", "localhost")
+        redis_port = environ.get("REDIS_PORT", 6379)
+        redis_inst = Redis(host=redis_host, port=redis_port)
+        app.session_interface = redis_session.RedisSessionInterface(redis=redis_inst)
 
     app.debug = True
     app.secret_key = "test"
