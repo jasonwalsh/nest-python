@@ -39,7 +39,6 @@ div.structure-card, #schedAwayBtn, #schedCamBtn {
 
 #results {
     background-color: #fff;
-    max-width: 950px
 }
 
 #structure-picker {
@@ -53,15 +52,15 @@ div.structure-card, #schedAwayBtn, #schedCamBtn {
 
 .demo {
     width: auto;
-    height: auto;
-    max-height: auto;
+    height: 130px;
+    max-height: 150px;
     background-color: #fff;
     color: slategrey;
 }
 
 .card-device {
-    min-width:255px;
-    max-width:275px;
+    min-width:275px;
+    max-width:300px;
     margin-bottom:15px;
 }
 
