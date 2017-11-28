@@ -127,8 +127,18 @@
 
         // update API data (for fields with radio buttons)
         $('input[type="radio"]').bind('click', function(ev) {
-            let newval = $(this).val();
-            if (!window.confirm("Please confirm that you want to change this to "+newval+".")) {
+            let field = this.name;
+            let newval = this.value;
+            let msg = 'Set ' + field + ' to ' + newval + '?';
+            switch(field) {
+                case 'is_streaming':
+                    msg = 'Turn ' + (newval === 'true'? 'ON' : 'OFF') + ' your Nest Cam?';
+                    break;
+                case 'away':
+                    msg = 'Set your structure to ' + newval + '?';
+                    break;
+            }
+            if (!window.confirm(msg)) {
                 return false;
             } else {
                 $(this).closest('form').submit(); // submit changes to API data
@@ -238,13 +248,13 @@
             let camera = $form.find("*[name=camera]").val();
             let cameraName = $form.find("*[name=camera] option:selected").text();
             let isStreaming = $form.find("*[name=is_streaming]").val();
-            let onOffLabel = isStreaming === 'true' ? 'on' : 'off';
+            let onOffLabel = isStreaming === 'true' ? 'ON' : 'OFF';
             let url = $form.attr('path') + camera;
             /*
              Product asks using confirmation for an automated action, such as when switching Home/Away states and turning Camera on/off.
              */
             let confirmSchedule = function() {
-                let confirmQMsg = "Set camera " + cameraName + " streaming on/off to '" + onOffLabel + "'?";
+                let confirmQMsg = "Turn " + onOffLabel + " your " + cameraName + " Nest Cam?";
                 let cancelMsg = "Scheduled request to set camera streaming on/off to '" + onOffLabel + "' has been cancelled.";
                 showConfirmModalDialog(createAlertContent('info', confirmQMsg), 'Camera Schedule',
                     function(){ sendRequest({ type: 'POST', url: url, data: "is_streaming="+isStreaming }); },
