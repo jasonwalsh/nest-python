@@ -27,7 +27,7 @@ instead, follow the instructions in [README-Docker.md](README-Docker.md).
 
 1. Install PIP and Python 2.7: 
    [https://zaiste.net/posts/installing\_python\_27\_on\_osx\_with\_homebrew/](https://zaiste.net/posts/installing_python_27_on_osx_with_homebrew/)<br/>
-1. Download the sample app.  You can modify it if you want any of the following options: 
+1. Clone or download this sample code.  You can modify it to use these options:
    * (Optional) Use Redis sessions  
      You can use Redis for Flask server-side sessions instead of the default Flask cookie based sessions.
      *  Install Redis for your environment: [https://redis.io](http://redis.io)
@@ -132,11 +132,11 @@ If you are prompted, click to allow incoming network connections.
 
 Click **Login**.
 
-When we log in, we are redirected to the Nest Authorization screen.  
+When you log in, you are redirected to the Nest Authorization screen.  
 On the Nest Authorization screen, click **Accept**.
 
-When we accept the integration, the Nest Authorization screen redirects to the  
-Redirect URL configured for our product integration 
+When you accept the integration, the Nest Authorization screen redirects to the  
+Redirect URL configured for your product integration 
 (http://localhost:5000/callback).
 
 —————————————————————————————————————
@@ -144,8 +144,8 @@ Redirect URL configured for our product integration
 ## 8. See the app in a mobile format
 
 In Chrome, right-click the app and select **Inspect**.  
-In the Responsive pulldown menu, select another format, such as iPhone 6.  
-Click the icon that looks like a phone (**Toggle device toolbar**).
+Click the icon that looks like a phone (**Toggle device toolbar**).  
+In the emulated devices menu, select another format, such as iPhone 6.
 
 ## Companion codelab
 
