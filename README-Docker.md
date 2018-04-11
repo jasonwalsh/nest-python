@@ -46,26 +46,26 @@ Use the Nest Home Simulator to simulate a Nest device
 
 —————————————————————————————————————
 
-## 5. Create a cloud product at console.developers.nest.com
+## 5. Create a Nest OAuth Client at console.developers.nest.com
 
 Use the same account that you used for your Nest device. 
 
 For the redirect URI, use http://localhost:5000/callback
 
-For the permissions, select read/write corresponding with your Nest product. For 
+For the permissions, select read/write corresponding with your Nest client. For 
 example,  
 if your Nest product is a Thermostat, select Thermostat Read/Write.
 
-In order to authorize your Nest integration, you need a Product ID and Product  
-Secret. The next step is to set the product ID and product secret as environment  
-variables so these values can be retrieved by the application.
+The next step is to set your OAuth client ID and client secret as environment  
+variables so these values can be retrieved by the application to authorize 
+your Nest integration.
 
 If you are using Linux or MacOS, open a Bash shell and type the commands below  
-(substitute your product ID and secret you copied from your product page):
+(substitute your client ID and secret you copied from your client page):
 
 ```
-$ export PRODUCT_ID='Your product ID here'
-$ export PRODUCT_SECRET='Your product secret here'
+$ export PRODUCT_ID='Your OAuth client ID here'
+$ export PRODUCT_SECRET='Your OAuth client secret here'
 ```
 
 —————————————————————————————————————
@@ -102,7 +102,7 @@ When we log in, we are redirected to the Nest Authorization screen.
 On the Nest Authorization screen, click **Accept**.
 
 When we accept the integration, the Nest Authorization screen redirects to the  
-Redirect URL configured for our product integration 
+Redirect URL configured for our Nest client integration
 (http://localhost:5000/callback).
 
 —————————————————————————————————————
